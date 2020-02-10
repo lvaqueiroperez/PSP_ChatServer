@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package psp_chatserver;
 
 import java.io.IOException;
@@ -14,11 +9,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author luis-
- */
 public class UI_Server1 extends javax.swing.JFrame {
+
+    //VARIBLES DE CLASE
+    public static int puerto = 0;
 
     /**
      * Creates new form UI_Server1
@@ -107,7 +101,76 @@ public class UI_Server1 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
+        //USANDO ESTE TIPO DE MÉTODOS DEL JOPTIONPANE, NOS ASEGURAMOS DE QUE NO SE HAGA
+        //NINGUNA OTRA ACCIÓN HASTA QUE DESAPAREZCA EL MENÚ DE JOPTIONPANE
+        puerto = Integer.parseInt(JOptionPane.showInputDialog("INTRODUCE EL PUERTO QUE DESEAS UTILIZAR: "));
 
+//        UI_Server2 ui2 = new UI_Server2();
+//        ui2.setVisible(true);
+//
+        //EL INICIO DEL SERVER BLOQUEA TAMBIÉN LA INTERFAZ 2???
+        //PROBAR A PONER LA INTERFAZ 2 EN UN HILO PARA QUE NO OCURRA
+        //AL PULSAR ESTE BOTÓN,INICIAMOS TODO, INCLUSO PONEMOS TEXTO EN LA UI
+        System.out.println("***** CREANDO SOCKET SERVIDOR *****");
+
+        try {
+            ServerSocket serverSocket = new ServerSocket();
+            InetSocketAddress addr = new InetSocketAddress("localhost", UI_Server1.puerto);
+
+            System.out.println("***** REALIZANDO BIND *****");
+
+            serverSocket.bind(addr);
+
+            System.out.println("***** PUERTO " + UI_Server1.puerto + " *****");
+
+            /*
+        podríamos poner != null para que, cuando serverSocket deje de recibir
+        conexiones, el server se apagase directamente
+             */
+            int serverStatus = 1;
+            //CONTADOR DE CLIENTES Y A LA VEZ SU ID
+            int n = 1;
+            //CAMBIAR LA CONDICION 
+            while (serverStatus == 1) {
+
+                System.out.println("****** ACEPTANDO CONEXIONES ******");
+                //PONER EL SOCKET COMO PARÁMETRO DEL HILO PARA DIFERENCIARLOS (?)
+                Socket newSocket = serverSocket.accept();
+
+                //CADA CLIENTE QUE SE CONECTE SERÁ UN HILO, CON SUS ATRIBUTOS DE LA
+                //CLASE DE HILOS
+                //CADA UNO TENDRÁ SU SOCKET, UN NÚMERO A MODO DE "ID" 
+                //Y LUEGO SE LE PONDRÁ SU NICKNAME, QUE DE MOMENTO SERÁ PREDETERMINADO
+                if (n < 10) {
+                    ServerHilos c = new ServerHilos(newSocket, n);
+                    //PARECE QUE CUANDO LE DAMOS A "INICIAR" LA UI SE BLOQUEA HASTA
+                    //QUE SE CONECTA UN USE, ASÍ QUE APROVECHAR CADA CONEXIÓN PARA
+                    //HACER LOS CAMBIOS NECESARIOS Y FIJARSE ABAJO DEL TODO EN LAS LABELS QUE TENEMOS
+                    c.start();
+
+                    //BORRAR?
+                    if (serverStatus == 0) {
+
+                        System.out.println("***** CERRANDO SERVER *****");
+                        serverSocket.close();
+
+                    }
+
+                    //INCREMENTAMOS EL NÚMERO DE CLIENTES
+                    n++;
+
+                } else {
+                    System.out.println("MÁXIMO NÚMERO DE CLIENTES ALCANZADO");
+                    //ENVIAR MENSAJE INFORMATIVO AL CLIENTE???
+                }
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(UI_Server2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //PROBLEMA RESUELTO: LA UI DONDE ESTÉ EL BOTÓN CON EL CÓDIGO QUE INICIA EL SERVER,
+        //UNA VEZ INICIAR, SE BLOQUEA, ASÍ QUE INICIAMOS EL SERVER EN ESTA CLASE
 
     }//GEN-LAST:event_btnIniciarActionPerformed
 

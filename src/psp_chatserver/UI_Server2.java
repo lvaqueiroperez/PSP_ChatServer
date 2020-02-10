@@ -1,21 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package psp_chatserver;
 
-/**
- *
- * @author luis-
- */
+import java.io.IOException;
+import static java.lang.Thread.sleep;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 public class UI_Server2 extends javax.swing.JFrame {
 
-    /**
-     * Creates new form UI_Server2
-     */
+    //USAMOS EL CONSTRUCTOR DE LA CLASE PARA INICIAR EL SERVER ???
     public UI_Server2() {
+
         initComponents();
+
     }
 
     /**
@@ -32,9 +32,11 @@ public class UI_Server2 extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea1 = new javax.swing.JTextArea();
-        txtInfo1 = new javax.swing.JTextField();
-        txtInfo2 = new javax.swing.JTextField();
         btnApagar = new javax.swing.JButton();
+        btnIniciar = new javax.swing.JButton();
+        lblInfo2 = new javax.swing.JLabel();
+        lblConectados = new javax.swing.JLabel();
+        lblNuevoUser = new javax.swing.JLabel();
 
         jToggleButton1.setText("jToggleButton1");
 
@@ -48,62 +50,76 @@ public class UI_Server2 extends javax.swing.JFrame {
         txtArea1.setRows(5);
         jScrollPane1.setViewportView(txtArea1);
 
-        txtInfo1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtInfo1.setText("NINGÚN CLIENTE CONECTADO");
-        txtInfo1.addActionListener(new java.awt.event.ActionListener() {
+        btnApagar.setText("APAGAR");
+
+        btnIniciar.setText("INICIAR");
+        btnIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtInfo1ActionPerformed(evt);
+                btnIniciarActionPerformed(evt);
             }
         });
 
-        txtInfo2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        btnApagar.setText("APAGAR");
+        lblConectados.setText("Ningún user conectado");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+                        .addGap(18, 18, 18))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtInfo1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtInfo2))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnIniciar)
+                        .addContainerGap())))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnApagar))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(153, 153, 153)
-                                .addComponent(jLabel1)))
-                        .addGap(0, 154, Short.MAX_VALUE)))
-                .addGap(18, 18, 18))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnApagar)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(107, 107, 107)
+                                .addComponent(lblInfo2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(107, 107, 107)
+                                .addComponent(lblConectados)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(137, 137, 137)
+                .addComponent(lblNuevoUser)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(btnIniciar)))
+                .addGap(30, 30, 30)
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtInfo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtInfo2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(lblNuevoUser)
+                .addGap(18, 18, 18)
+                .addComponent(lblConectados)
+                .addGap(26, 26, 26)
+                .addComponent(lblInfo2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addComponent(btnApagar)
                 .addContainerGap())
         );
@@ -111,9 +127,11 @@ public class UI_Server2 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtInfo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInfo1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtInfo1ActionPerformed
+    private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
+
+        
+
+    }//GEN-LAST:event_btnIniciarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -146,18 +164,23 @@ public class UI_Server2 extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new UI_Server2().setVisible(true);
+
             }
         });
+
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApagar;
+    private javax.swing.JButton btnIniciar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToggleButton jToggleButton1;
+    public static javax.swing.JLabel lblConectados;
+    private javax.swing.JLabel lblInfo2;
+    private javax.swing.JLabel lblNuevoUser;
     private javax.swing.JTextArea txtArea1;
-    private javax.swing.JTextField txtInfo1;
-    private javax.swing.JTextField txtInfo2;
     // End of variables declaration//GEN-END:variables
 }
