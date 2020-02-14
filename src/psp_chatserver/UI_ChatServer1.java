@@ -1,5 +1,6 @@
 package psp_chatserver;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import static java.lang.Thread.sleep;
 import java.net.InetSocketAddress;
@@ -9,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-public class UI_Server1 extends javax.swing.JFrame {
+public class UI_ChatServer1 extends javax.swing.JFrame {
 
     //VARIBLES DE CLASE
     public static int puerto = 0;
@@ -17,7 +18,7 @@ public class UI_Server1 extends javax.swing.JFrame {
     /**
      * Creates new form UI_Server1
      */
-    public UI_Server1() {
+    public UI_ChatServer1() {
         initComponents();
     }
 
@@ -104,24 +105,25 @@ public class UI_Server1 extends javax.swing.JFrame {
         //USANDO ESTE TIPO DE MÉTODOS DEL JOPTIONPANE, NOS ASEGURAMOS DE QUE NO SE HAGA
         //NINGUNA OTRA ACCIÓN HASTA QUE DESAPAREZCA EL MENÚ DE JOPTIONPANE
         puerto = Integer.parseInt(JOptionPane.showInputDialog("INTRODUCE EL PUERTO QUE DESEAS UTILIZAR: "));
-
+//
 //        UI_Server2 ui2 = new UI_Server2();
 //        ui2.setVisible(true);
 //
         //EL INICIO DEL SERVER BLOQUEA TAMBIÉN LA INTERFAZ 2???
         //PROBAR A PONER LA INTERFAZ 2 EN UN HILO PARA QUE NO OCURRA
-        //AL PULSAR ESTE BOTÓN,INICIAMOS TODO, INCLUSO PONEMOS TEXTO EN LA UI
+        //AL PULSAR ESTE BOTÓN,INICIAMOS TODO, INCLUSO PONEMOS TEXTO EN LA UI:
+
         System.out.println("***** CREANDO SOCKET SERVIDOR *****");
 
         try {
             ServerSocket serverSocket = new ServerSocket();
-            InetSocketAddress addr = new InetSocketAddress("localhost", UI_Server1.puerto);
+            InetSocketAddress addr = new InetSocketAddress("localhost", UI_ChatServer1.puerto);
 
             System.out.println("***** REALIZANDO BIND *****");
 
             serverSocket.bind(addr);
 
-            System.out.println("***** PUERTO " + UI_Server1.puerto + " *****");
+            System.out.println("***** PUERTO " + UI_ChatServer1.puerto + " *****");
 
             /*
         podríamos poner != null para que, cuando serverSocket deje de recibir
@@ -129,7 +131,7 @@ public class UI_Server1 extends javax.swing.JFrame {
              */
             int serverStatus = 1;
             //CONTADOR DE CLIENTES Y A LA VEZ SU ID
-            int n = 1;
+            int n = 0;
             //CAMBIAR LA CONDICION 
             while (serverStatus == 1) {
 
@@ -141,8 +143,10 @@ public class UI_Server1 extends javax.swing.JFrame {
                 //CLASE DE HILOS
                 //CADA UNO TENDRÁ SU SOCKET, UN NÚMERO A MODO DE "ID" 
                 //Y LUEGO SE LE PONDRÁ SU NICKNAME, QUE DE MOMENTO SERÁ PREDETERMINADO
-                if (n < 10) {
-                    ServerHilos c = new ServerHilos(newSocket, n);
+                if (n < 3) {
+                    //INCREMENTAMOS EL NÚMERO DE CLIENTES
+                    n++;
+                    ChatServerHilos c = new ChatServerHilos(newSocket, n);
                     //PARECE QUE CUANDO LE DAMOS A "INICIAR" LA UI SE BLOQUEA HASTA
                     //QUE SE CONECTA UN USE, ASÍ QUE APROVECHAR CADA CONEXIÓN PARA
                     //HACER LOS CAMBIOS NECESARIOS Y FIJARSE ABAJO DEL TODO EN LAS LABELS QUE TENEMOS
@@ -156,17 +160,25 @@ public class UI_Server1 extends javax.swing.JFrame {
 
                     }
 
-                    //INCREMENTAMOS EL NÚMERO DE CLIENTES
-                    n++;
+                    
 
                 } else {
                     System.out.println("MÁXIMO NÚMERO DE CLIENTES ALCANZADO");
                     //ENVIAR MENSAJE INFORMATIVO AL CLIENTE???
+                    
+                    DataOutputStream dosInfo = new DataOutputStream(newSocket.getOutputStream());
+                    
+                    dosInfo.writeUTF("SERVER LLENO");
+                    
                 }
+
+                //MENSAJES RECIBIDOS EN LOS HILOS
+                
+               
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(UI_Server2.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UI_ChatServer1.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //PROBLEMA RESUELTO: LA UI DONDE ESTÉ EL BOTÓN CON EL CÓDIGO QUE INICIA EL SERVER,
@@ -191,20 +203,21 @@ public class UI_Server1 extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UI_Server1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UI_ChatServer1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UI_Server1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UI_ChatServer1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UI_Server1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UI_ChatServer1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UI_Server1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UI_ChatServer1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UI_Server1().setVisible(true);
+                new UI_ChatServer1().setVisible(true);
             }
         });
     }
