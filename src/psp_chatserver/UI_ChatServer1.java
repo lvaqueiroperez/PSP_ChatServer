@@ -6,6 +6,7 @@ import static java.lang.Thread.sleep;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -14,6 +15,13 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
 
     //VARIBLES DE CLASE
     public static int puerto = 0;
+    //HACEMOS UN ARRAY DONDE ALMACENAREMOS TODAS LAS CONEXIONES QUE VAYAN ENTRANDO
+    //ESTO ES DE UTILIDAD PARA, POR EJEMPLO, PODER ENVIAR UN MISMO MENSAJE A VARIOS CLIENTES
+    //DESDE EL SERVER
+    public static ArrayList<ChatServerHilos> listaClientes = new ArrayList<>();
+    //CONTADOR DE CLIENTES Y A LA VEZ SU ID
+    //no se incrementa a la hora de mostrarlo en el terminal pero sí para aceptar un numero maximo de conexiones ??????
+    public static int n = 0;
 
     /**
      * Creates new form UI_Server1
@@ -103,15 +111,11 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
 
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
         //USANDO ESTE TIPO DE MÉTODOS DEL JOPTIONPANE, NOS ASEGURAMOS DE QUE NO SE HAGA
-        //NINGUNA OTRA ACCIÓN HASTA QUE DESAPAREZCA EL MENÚ DE JOPTIONPANE
+        //NINGUNA OTRA ACCIÓN HASTA QUE DESAPAREZCA EL MENÚ DE JOPTIONPANE !!!
         puerto = Integer.parseInt(JOptionPane.showInputDialog("INTRODUCE EL PUERTO QUE DESEAS UTILIZAR: "));
 //
-//        UI_Server2 ui2 = new UI_Server2();
-//        ui2.setVisible(true);
-//
-        //EL INICIO DEL SERVER BLOQUEA TAMBIÉN LA INTERFAZ 2???
-        //PROBAR A PONER LA INTERFAZ 2 EN UN HILO PARA QUE NO OCURRA
-        //AL PULSAR ESTE BOTÓN,INICIAMOS TODO, INCLUSO PONEMOS TEXTO EN LA UI:
+        //EN LOS SERVER, NO SE SUELEN PONER INTERFACES DETALLADAS
+        //MEJOR USAR EL TERMINAL PARA CASI TODO !!!
 
         System.out.println("***** CREANDO SOCKET SERVIDOR *****");
 
@@ -130,13 +134,12 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
         conexiones, el server se apagase directamente
              */
             int serverStatus = 1;
-            //CONTADOR DE CLIENTES Y A LA VEZ SU ID
-            int n = 0;
+
             //CAMBIAR LA CONDICION 
             while (serverStatus == 1) {
 
                 System.out.println("****** ACEPTANDO CONEXIONES ******");
-                //PONER EL SOCKET COMO PARÁMETRO DEL HILO PARA DIFERENCIARLOS (?)
+                //PONER EL NUEVO SOCKET COMO PARÁMETRO DEL HILO PARA DIFERENCIARLOS Y QUE FUNCIONE
                 Socket newSocket = serverSocket.accept();
 
                 //CADA CLIENTE QUE SE CONECTE SERÁ UN HILO, CON SUS ATRIBUTOS DE LA
@@ -145,11 +148,11 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
                 //Y LUEGO SE LE PONDRÁ SU NICKNAME, QUE DE MOMENTO SERÁ PREDETERMINADO
                 if (n < 3) {
                     //INCREMENTAMOS EL NÚMERO DE CLIENTES
-                    n++;
+
                     ChatServerHilos c = new ChatServerHilos(newSocket, n);
-                    //PARECE QUE CUANDO LE DAMOS A "INICIAR" LA UI SE BLOQUEA HASTA
-                    //QUE SE CONECTA UN USE, ASÍ QUE APROVECHAR CADA CONEXIÓN PARA
-                    //HACER LOS CAMBIOS NECESARIOS Y FIJARSE ABAJO DEL TODO EN LAS LABELS QUE TENEMOS
+                    //AÑADIMOS ANTES DE NADA EL OBJETO HILO A NUESTRO ARRAY, PARA TENER LA INFORMACIÓN DE SU SOCKET
+                    listaClientes.add(c);
+                    n++;
                     c.start();
 
                     //BORRAR?
@@ -160,29 +163,24 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
 
                     }
 
-                    
-
                 } else {
                     System.out.println("MÁXIMO NÚMERO DE CLIENTES ALCANZADO");
-                    //ENVIAR MENSAJE INFORMATIVO AL CLIENTE???
-                    
+
+                    //ENVIAR MENSAJE INFORMATIVO AL CLIENTE DE QUE NO SE PUEDE CONECTAR:
                     DataOutputStream dosInfo = new DataOutputStream(newSocket.getOutputStream());
-                    
+
                     dosInfo.writeUTF("SERVER LLENO");
-                    
+
                 }
 
-                //MENSAJES RECIBIDOS EN LOS HILOS
-                
-               
+                //MENSAJES RECIBIDOS DE LOS CLIENTES EN LOS HILOS !!!
+                //(ya que el server se va a mantener abierto esperando conexiones y no va a poder hacer otra cosa)
             }
 
         } catch (IOException ex) {
             Logger.getLogger(UI_ChatServer1.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //PROBLEMA RESUELTO: LA UI DONDE ESTÉ EL BOTÓN CON EL CÓDIGO QUE INICIA EL SERVER,
-        //UNA VEZ INICIAR, SE BLOQUEA, ASÍ QUE INICIAMOS EL SERVER EN ESTA CLASE
 
     }//GEN-LAST:event_btnIniciarActionPerformed
 
