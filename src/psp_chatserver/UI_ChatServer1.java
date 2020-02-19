@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
+//USAR EXCEPCIONES PARA INFORMAR QUE EL SERVER SE HA DESCONECTADO A LOS CLIENTES
 public class UI_ChatServer1 extends javax.swing.JFrame {
 
     //VARIBLES DE CLASE
@@ -136,6 +136,7 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
             int serverStatus = 1;
 
             //CAMBIAR LA CONDICION 
+            System.out.println("NINGÚN USUARIO CONECTADO");
             while (serverStatus == 1) {
 
                 System.out.println("****** ACEPTANDO CONEXIONES ******");
