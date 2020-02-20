@@ -28,21 +28,35 @@ public class ChatServerHilos extends Thread {
 
     @Override
     public void run() {
-        //RECIBIMOS EL NICKNAME, IP Y PUERTO:
-        DataInputStream dinNick;
-        try {
-            dinNick = new DataInputStream(newSocket.getInputStream());
 
-            nickname = dinNick.readUTF();
-            direccionIP = dinNick.readUTF();
-            puerto = Integer.parseInt(dinNick.readUTF());
+        //RECIBIMOS EL NICKNAME, IP Y PUERTO:
+        DataInputStream disCliente;
+        try {
+            disCliente = new DataInputStream(newSocket.getInputStream());
+
+            nickname = disCliente.readUTF();
+            direccionIP = disCliente.readUTF();
+            puerto = Integer.parseInt(disCliente.readUTF());
         } catch (IOException ex) {
             Logger.getLogger(ChatServerHilos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //siempre muestra 0 si lo ponemos como id, pero no al acceder a la variable n?
         System.out.println("***** NUEVO CLIENTE CONECTADO (" + nickname + " / " + direccionIP + " / " + puerto + ") *****");
-        System.out.println("***** ACTUALMENTE HAY "+ UI_ChatServer1.n +" USUARIOS CONECTADOS *****");
+        System.out.println("***** ACTUALMENTE HAY " + UI_ChatServer1.n + " USUARIOS CONECTADOS *****");
+
+        //INFORMAMOS AL CHAT DE QUE SE ACABA DE CONECTAR UN USER:
+        for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
+
+            DataOutputStream dos;
+            try {
+                dos = new DataOutputStream(z.newSocket.getOutputStream());
+                dos.writeUTF("***** " + nickname + " ACABA DE CONECTARSE AL CHAT *****");
+
+            } catch (IOException ex) {
+                Logger.getLogger(ChatServerHilos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
 
         try {
             //BUCLE PARA SEGUIR LEYENDO SIEMPRE 
@@ -59,6 +73,13 @@ public class ChatServerHilos extends Thread {
                     DataOutputStream dos = new DataOutputStream(z.newSocket.getOutputStream());
 
                     dos.writeUTF(msg);
+
+                }
+
+                //COMPROBAMOS SI SE DESCONECTA:
+                if (newSocket.isClosed()) {
+
+                    System.out.println("***** CLIENTE " + nickname + "DESCONECTADO *****");
 
                 }
             }

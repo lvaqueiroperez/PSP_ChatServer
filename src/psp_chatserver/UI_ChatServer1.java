@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 //USAR EXCEPCIONES PARA INFORMAR QUE EL SERVER SE HA DESCONECTADO A LOS CLIENTES
+
 public class UI_ChatServer1 extends javax.swing.JFrame {
 
     //VARIBLES DE CLASE
@@ -18,9 +19,9 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
     //HACEMOS UN ARRAY DONDE ALMACENAREMOS TODAS LAS CONEXIONES QUE VAYAN ENTRANDO
     //ESTO ES DE UTILIDAD PARA, POR EJEMPLO, PODER ENVIAR UN MISMO MENSAJE A VARIOS CLIENTES
     //DESDE EL SERVER
+    //TENDREMOS QUE QUITAR DEL ARRAY AQUELLOS CLIENTES QUE SE HAYAN DESCONECTADO
     public static ArrayList<ChatServerHilos> listaClientes = new ArrayList<>();
     //CONTADOR DE CLIENTES Y A LA VEZ SU ID
-    //no se incrementa a la hora de mostrarlo en el terminal pero sí para aceptar un numero maximo de conexiones ??????
     public static int n = 0;
 
     /**
@@ -148,21 +149,12 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
                 //CADA UNO TENDRÁ SU SOCKET, UN NÚMERO A MODO DE "ID" 
                 //Y LUEGO SE LE PONDRÁ SU NICKNAME, QUE DE MOMENTO SERÁ PREDETERMINADO
                 if (n < 3) {
-                    //INCREMENTAMOS EL NÚMERO DE CLIENTES
 
                     ChatServerHilos c = new ChatServerHilos(newSocket, n);
                     //AÑADIMOS ANTES DE NADA EL OBJETO HILO A NUESTRO ARRAY, PARA TENER LA INFORMACIÓN DE SU SOCKET
                     listaClientes.add(c);
                     n++;
                     c.start();
-
-                    //BORRAR?
-                    if (serverStatus == 0) {
-
-                        System.out.println("***** CERRANDO SERVER *****");
-                        serverSocket.close();
-
-                    }
 
                 } else {
                     System.out.println("MÁXIMO NÚMERO DE CLIENTES ALCANZADO");
