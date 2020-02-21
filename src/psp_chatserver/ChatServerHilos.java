@@ -65,27 +65,47 @@ public class ChatServerHilos extends Thread {
 
                 //CUANDO UN CLIENTE ENVÍA UN MENSAJE, EN EL SERVER LO MOSTRAMOS POR EL TERMINAL
                 String msg = din2.readUTF();
-                System.out.println("***** " + msg + " *****");
-                //Y LO ENVIAMOS DE VUELTA A TODOS LOS CLIENTES (TODOS LOS CLIENTES DEBEN DE RECIBIR TODOS LOS MENSAJES ESCRITOS !!!)
 
-                for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
+                //COMPROBAMOS SI EL MENSAJE ES UN /BYE
+                if (msg.equals("/bye")) {
 
-                    DataOutputStream dos = new DataOutputStream(z.newSocket.getOutputStream());
+                    //QUITAMOS DEL ARRAY A ESE USER
+                    for (ChatServerHilos cliente : UI_ChatServer1.listaClientes) {
 
-                    dos.writeUTF(msg);
+                        if (cliente.id == id) {
+                            UI_ChatServer1.listaClientes.remove(cliente);
+                            //salimos de este for
+                            break;
+                        }
 
+                    }
+
+                    for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
+
+                        DataOutputStream dos = new DataOutputStream(z.newSocket.getOutputStream());
+
+                        dos.writeUTF(nickname + " SE HA DESCONECTADO");
+
+                    }
+
+                } else {
+
+                    System.out.println("***** " + msg + " *****");
+                    //Y LO ENVIAMOS DE VUELTA A TODOS LOS CLIENTES (TODOS LOS CLIENTES DEBEN DE RECIBIR TODOS LOS MENSAJES ESCRITOS !!!)
+
+                    for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
+
+                        DataOutputStream dos = new DataOutputStream(z.newSocket.getOutputStream());
+
+                        dos.writeUTF(msg);
+
+                    }
                 }
 
-                //COMPROBAMOS SI SE DESCONECTA:
-                if (newSocket.isClosed()) {
-
-                    System.out.println("***** CLIENTE " + nickname + "DESCONECTADO *****");
-
-                }
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(ChatServerHilos.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("***** " + nickname + " SE HA DESCONECTADO *****");
         }
 
     }
