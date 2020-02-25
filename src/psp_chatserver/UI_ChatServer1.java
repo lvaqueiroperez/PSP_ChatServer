@@ -148,7 +148,7 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
                 //CLASE DE HILOS
                 //CADA UNO TENDRÁ SU SOCKET, UN NÚMERO A MODO DE "ID" 
                 //Y LUEGO SE LE PONDRÁ SU NICKNAME, QUE DE MOMENTO SERÁ PREDETERMINADO
-                if (n < 3) {
+                if (n < 2) {
 
                     ChatServerHilos c = new ChatServerHilos(newSocket, n);
                     //AÑADIMOS ANTES DE NADA EL OBJETO HILO A NUESTRO ARRAY, PARA TENER LA INFORMACIÓN DE SU SOCKET

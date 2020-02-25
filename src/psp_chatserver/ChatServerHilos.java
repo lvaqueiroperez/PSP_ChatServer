@@ -42,7 +42,7 @@ public class ChatServerHilos extends Thread {
         }
 
         System.out.println("***** NUEVO CLIENTE CONECTADO (" + nickname + " / " + direccionIP + " / " + puerto + ") *****");
-        System.out.println("***** ACTUALMENTE HAY " + UI_ChatServer1.n + " USUARIOS CONECTADOS *****");
+        System.out.println("ACTUALMENTE HAY " + UI_ChatServer1.n + " USUARIOS CONECTADOS");
 
         //INFORMAMOS AL CHAT DE QUE SE ACABA DE CONECTAR UN USER:
         for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
@@ -69,7 +69,9 @@ public class ChatServerHilos extends Thread {
                 //COMPROBAMOS SI EL MENSAJE ES UN /BYE
                 if (msg.equals("/bye")) {
 
-                    //QUITAMOS DEL ARRAY A ESE USER
+                    //DISMINUIMOS EL NUMERO DE USERS CONECTADOS
+                    UI_ChatServer1.n--;
+                    //Y LO QUITAMOS DEL ARRAY DE CONEXIONES
                     for (ChatServerHilos cliente : UI_ChatServer1.listaClientes) {
 
                         if (cliente.id == id) {
@@ -80,6 +82,7 @@ public class ChatServerHilos extends Thread {
 
                     }
 
+                    //INFORMAMOS A LOS CLIENTES DE QUIÓN SE HA DESCONECTADO
                     for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
 
                         DataOutputStream dos = new DataOutputStream(z.newSocket.getOutputStream());
@@ -90,7 +93,7 @@ public class ChatServerHilos extends Thread {
 
                 } else {
 
-                    System.out.println("***** " + msg + " *****");
+                    System.out.println(msg);
                     //Y LO ENVIAMOS DE VUELTA A TODOS LOS CLIENTES (TODOS LOS CLIENTES DEBEN DE RECIBIR TODOS LOS MENSAJES ESCRITOS !!!)
 
                     for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
@@ -105,7 +108,15 @@ public class ChatServerHilos extends Thread {
             }
 
         } catch (IOException ex) {
+            //SI UN USUARIO SE DESCONECTA DEL CHAT, SALTARÁ ESTA EXCEPCIÓN:
             System.out.println("***** " + nickname + " SE HA DESCONECTADO *****");
+
+            //COMPROBAMOS N PARA SABER CUANTOS USUARIOS HAY CONECTADOS:
+            if (UI_ChatServer1.n == 0) {
+                System.out.println("NINGÚN USUARIO CONECTADO");
+            } else {
+                System.out.println("ACTUALMENTE HAY " + UI_ChatServer1.n + " USUARIOS CONECTADOS");
+            }
         }
 
     }
