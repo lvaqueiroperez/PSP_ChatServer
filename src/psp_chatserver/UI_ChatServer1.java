@@ -113,11 +113,17 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
         //USANDO ESTE TIPO DE MÉTODOS DEL JOPTIONPANE, NOS ASEGURAMOS DE QUE NO SE HAGA
         //NINGUNA OTRA ACCIÓN HASTA QUE DESAPAREZCA EL MENÚ DE JOPTIONPANE !!!
-        puerto = Integer.parseInt(JOptionPane.showInputDialog("INTRODUCE EL PUERTO QUE DESEAS UTILIZAR: "));
-//
+        do {
+            puerto = Integer.parseInt(JOptionPane.showInputDialog("INTRODUCE EL PUERTO QUE DESEAS UTILIZAR: "));
+
+            if ((puerto < 1000) || (puerto > 9999)) {
+                System.out.println("PUERTO INCORRECTO, INTRODÚZCALO OTRA VEZ");
+
+            }
+        } while ((puerto < 1000) || (puerto > 9999));
+
         //EN LOS SERVER, NO SE SUELEN PONER INTERFACES DETALLADAS
         //MEJOR USAR EL TERMINAL PARA CASI TODO !!!
-
         System.out.println("***** CREANDO SOCKET SERVIDOR *****");
 
         try {
