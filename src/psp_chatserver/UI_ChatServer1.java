@@ -23,6 +23,8 @@ public class UI_ChatServer1 extends javax.swing.JFrame {
     public static ArrayList<ChatServerHilos> listaClientes = new ArrayList<>();
     //CONTADOR DE CLIENTES Y A LA VEZ SU ID
     public static int n = 0;
+    //ARRAY DE NOMBRES DE CLIENTES PARA IDENTIFICARLOS SI YA EXISTEN
+    public static ArrayList<ChatServerHilos> nombres = new ArrayList<ChatServerHilos>();
 
     /**
      * Creates new form UI_Server1
