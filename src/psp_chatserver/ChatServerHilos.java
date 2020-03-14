@@ -18,7 +18,7 @@ public class ChatServerHilos extends Thread {
     private String direccionIP = "default";
     private int puerto = 0;
     //texto
-    private String txtArea;
+    //private String txtArea;
 
     //EN EL CONSTRUCTOR SOLO ESTABLECEMOS EL SOCKET RECIBIDO JUNTO A SU ID
     public ChatServerHilos(Socket newSocket, int idS) {
@@ -37,14 +37,13 @@ public class ChatServerHilos extends Thread {
         this.nickname = nickname;
     }
 
-    public void setTxtArea(String txtArea) {
-        this.txtArea = txtArea;
-    }
-
-    public String getTxtArea() {
-        return txtArea;
-    }
-
+//    public void setTxtArea(String txtArea) {
+//        this.txtArea = txtArea;
+//    }
+//
+//    public String getTxtArea() {
+//        return txtArea;
+//    }
     @Override
     public void run() {
 
@@ -65,30 +64,29 @@ public class ChatServerHilos extends Thread {
         System.out.println("ACTUALMENTE HAY " + UI_ChatServer1.n + " USUARIOS CONECTADOS");
 
         //ANTES DE NADA, SI EL USER YA EXISTE EN LA LISTA, LE ENVIAMOS EL CONTENIDO DE SU ÚLTIMA SESIÓN (SOLO A ÉL)
-        int existe = 0;
-        if (UI_ChatServer1.nombres.isEmpty() == false) {
-
-            for (ChatServerHilos z : UI_ChatServer1.nombres) {
-
-                if (z.getNickname().equals(nickname)) {
-
-                    System.out.println("*****USUARIO YA EXISTENTE, ENVIANDO HISTORIAL*****");
-                    existe = 1;
-                    
-                    //enviamos el historial que tengamos
-                    
-                    
-                    break;
-                }
-
-            }
-
-        }
-
-        if (existe == 0) {
-            //AÑADIMOS EL NICKNAME(ahora la clase) AL ARRAYLIST
-            UI_ChatServer1.nombres.add(this);
-        }
+//        int existe = 0;
+//        if (UI_ChatServer1.nombres.isEmpty() == false) {
+//
+//            for (ChatServerHilos z : UI_ChatServer1.nombres) {
+//
+//                if (z.getNickname().equals(nickname)) {
+//
+//                    System.out.println("*****USUARIO YA EXISTENTE, ENVIANDO HISTORIAL*****");
+//                    existe = 1;
+//                    
+//                    //enviamos el historial que tengamos
+//                    
+//                    
+//                    break;
+//                }
+//
+//            }
+//
+//        }
+//        if (existe == 0) {
+//            //AÑADIMOS EL NICKNAME(ahora la clase) AL ARRAYLIST
+//            UI_ChatServer1.nombres.add(this);
+//        }
         //INFORMAMOS AL CHAT DE QUE SE ACABA DE CONECTAR UN USER:
         for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
 
@@ -127,7 +125,7 @@ public class ChatServerHilos extends Thread {
 
                     }
 
-                    //INFORMAMOS A LOS CLIENTES DE QUIÓN SE HA DESCONECTADO
+                    //INFORMAMOS A LOS CLIENTES DE QUIÉN SE HA DESCONECTADO
                     for (ChatServerHilos z : UI_ChatServer1.listaClientes) {
 
                         DataOutputStream dos = new DataOutputStream(z.newSocket.getOutputStream());
@@ -155,21 +153,17 @@ public class ChatServerHilos extends Thread {
         } catch (IOException ex) {
             //SI UN USUARIO SE DESCONECTA DEL CHAT, SALTARÁ ESTA EXCEPCIÓN:
             System.out.println("***** " + nickname + " SE HA DESCONECTADO *****");
-            
-            try {
-                //COMO SE HA DESCONECTADO, TENEMOS QUE GUARDAR SU TXTAREA POR SI SE VUELVE A CONECTAR
-                DataInputStream dinArea = new DataInputStream(newSocket.getInputStream());
-                
-                this.txtArea = dinArea.readUTF();
-                
-                //AHORA LO PONEMOS EN EL ARRAYLIST DONDE CORRESPONDE
-                
-                
-            } catch (IOException ex1) {
-                Logger.getLogger(ChatServerHilos.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            
 
+//            try {
+//                //COMO SE HA DESCONECTADO, TENEMOS QUE GUARDAR SU TXTAREA POR SI SE VUELVE A CONECTAR
+//                DataInputStream dinArea = new DataInputStream(newSocket.getInputStream());
+//
+//                this.txtArea = dinArea.readUTF();
+//
+//                //AHORA LO PONEMOS EN EL ARRAYLIST DONDE CORRESPONDE
+//            } catch (IOException ex1) {
+//                Logger.getLogger(ChatServerHilos.class.getName()).log(Level.SEVERE, null, ex1);
+//            }
             //COMPROBAMOS N PARA SABER CUANTOS USUARIOS HAY CONECTADOS:
             if (UI_ChatServer1.n == 0) {
                 System.out.println("NINGÚN USUARIO CONECTADO");
